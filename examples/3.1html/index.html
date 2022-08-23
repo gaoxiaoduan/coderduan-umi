@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+  <body>
+    <div id="root">
+      <span>loading...</span>
+    </div>
+    <script>
+      const root = document.getElementById("root");
+      root.innerHTML = "<span>Hello coderduan-umi</span>";
+      root.addEventListener("click", (event) => {
+        event.target.innerHTML = "<span>Hi!</span>";
+      });
+    </script>
+  </body>
+</html>

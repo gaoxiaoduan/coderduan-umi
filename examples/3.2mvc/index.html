@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>coderduan-umi</title>
+  </head>
+  <body>
+    <div id="root">
+      <span>loading...</span>
+    </div>
+    <script>
+      function Model() {
+        this.text = "Hello coderduan-umi";
+        this.setText = (text) => (this.text = text);
+      }
+
+      function View(controller) {
+        const self = this;
+        self.root = document.getElementById("root");
+        self.root.addEventListener("click", controller.onClick);
+        this.render = () => {
+          const text = controller.getModel().text;
+          self.root.innerHTML = `<span>${text}</span>`;
+        };
+      }
+
+      function Controller(model) {
+        const self = this;
+        self.model = model;
+        this.onClick = (event) => {
+          self.model.setText("Hi!");
+          const text = self.model.text;
+          event.target.innerHTML = `<span>${text}</span>`;
+        };
+        this.getModel = () => {
+          return self.model;
+        };
+      }
+
+      const model = new Model();
+      const controller = new Controller(model);
+      const view = new View(controller);
+      view.render();
+    </script>
+  </body>
+</html>
