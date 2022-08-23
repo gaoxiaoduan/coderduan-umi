@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "build": "pnpm esbuild src/** --bundle --outdir=www",
-    "dev": "pnpm build -- --watch",
+    "dev": "coderduan-umi dev",
     "serve": "cd www && serve -l 8000"
   },
   "dependencies": {

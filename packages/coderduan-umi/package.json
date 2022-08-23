@@ -7,8 +7,8 @@
     "coderduan-umi": "./bin/coderduan-umi.js"
   },
   "scripts": {
-    "build": "pnpm esbuild src/** --bundle --outdir=lib",
-    "dev": "pnpm build -- --watch"
+    "build": "pnpm esbuild src/** --bundle --outdir=lib --platform=node --external:esbuild",
+    "dev": "pnpm build --watch"
   },
   "repository": {
     "type": "git",
@@ -22,9 +22,10 @@
   },
   "homepage": "https://github.com/gaoxiaoduan/coderduan-umi#readme",
   "dependencies": {
-    "babel-standalone": "^6.26.0",
     "commander": "^9.4.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "express": "4.17.3"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13"
   }
 }
