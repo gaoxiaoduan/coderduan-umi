@@ -1,10 +1,13 @@
 {
   "name": "coderduan-umi",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "",
   "main": "index.js",
+  "bin": {
+    "coderduan-umi": "./bin/coderduan-umi.js"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "hello": "coderduan-umi"
   },
   "repository": {
     "type": "git",
@@ -19,6 +22,7 @@
   "homepage": "https://github.com/gaoxiaoduan/coderduan-umi#readme",
   "dependencies": {
     "babel-standalone": "^6.26.0",
+    "commander": "^9.4.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }
