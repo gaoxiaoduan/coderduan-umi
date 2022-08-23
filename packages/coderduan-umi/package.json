@@ -7,7 +7,8 @@
     "coderduan-umi": "./bin/coderduan-umi.js"
   },
   "scripts": {
-    "hello": "coderduan-umi"
+    "build": "pnpm esbuild src/** --bundle --outdir=lib",
+    "dev": "pnpm build -- --watch"
   },
   "repository": {
     "type": "git",

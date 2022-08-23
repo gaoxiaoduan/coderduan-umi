@@ -1,9 +1,18 @@
 {
   "name": "@examples/app",
+  "version": "1.0.0",
+  "main": "index.js",
   "scripts": {
-    "start": "coderduan-umi"
+    "build": "pnpm esbuild src/** --bundle --outdir=www",
+    "dev": "pnpm build -- --watch",
+    "serve": "cd www && serve -l 8000"
   },
   "dependencies": {
-    "coderduan-umi": "workspace:*"
+    "coderduan-umi": "workspace:*",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "serve": "^14.0.1"
   }
 }

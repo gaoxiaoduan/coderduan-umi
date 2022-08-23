@@ -3,8 +3,7 @@ const { program } = require("commander");
 program
   .version(require("../package.json").version, "-v, -V", "输出框架版本")
   .description("手写前端框架")
-  .usage("<command> [options]")
-  .parse(process.argv);
+  .usage("<command> [options]");
 
 program
   .command("help")
@@ -21,5 +20,13 @@ program
     Example call:
         $ coderduan-umi <command> --help
     `);
-  })
-  .parse(process.argv);
+  });
+
+program
+  .command("dev")
+  .description("框架开发命令")
+  .action(function () {
+    require("../lib/dev");
+  });
+
+program.parse(process.argv);
