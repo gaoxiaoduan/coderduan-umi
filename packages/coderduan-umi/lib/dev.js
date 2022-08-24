@@ -26308,10 +26308,8 @@ var dev = () => __async(void 0, null, function* () {
         external: ["esbuild"],
         watch: {
           onRebuild(error, result) {
-            console.log("dev--", result);
             if (error) {
-              console.error(JSON.stringify(error));
-              return;
+              return console.error(JSON.stringify(error));
             }
             senMessage("reload");
           }

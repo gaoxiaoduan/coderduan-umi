@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@alita/flow": "^3.0.1",
+    "@coderduan-umi/keepalive": "workspace:^0.0.1",
     "coderduan-umi": "workspace:*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

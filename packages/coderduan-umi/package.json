@@ -2,7 +2,7 @@
   "name": "coderduan-umi",
   "version": "0.0.3",
   "description": "",
-  "main": "index.js",
+  "main": "lib/index.js",
   "bin": {
     "coderduan-umi": "./bin/coderduan-umi.js"
   },
