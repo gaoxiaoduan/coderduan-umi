@@ -1,20 +1,22 @@
 import express from "express";
-import { serve, build } from "esbuild";
-import type { ServeOnRequestArgs } from "esbuild";
+import { build } from "esbuild";
 import path from "path";
+import portfinder from "portfinder";
+import { createServer } from "http";
+import { createWebSocketServer } from "./server";
 import {
   DEFAULT_OUTDIR,
   DEFAULT_ENTRY_POINT,
-  DEFAULT_FRAMEWORK_NAME,
   DEFAULT_PLATFORM,
   DEFAULT_HOST,
   DEFAULT_PORT,
-  DEFAULT_BUILD_PORT,
 } from "./constants";
 
 export const dev = async () => {
   const cwd = process.cwd();
   const app = express();
+  const port = await portfinder.getPortPromise({ port: DEFAULT_PORT });
+  const esbuildOutput = path.resolve(cwd, DEFAULT_OUTDIR);
 
   app.get("/", (req, res) => {
     res.set("Content-Type", "text/html");
@@ -30,50 +32,49 @@ export const dev = async () => {
           <div id="root">
             <span>loading...</span>
           </div>
-          <script src="http://${DEFAULT_HOST}:${DEFAULT_BUILD_PORT}/index.js"></script>
+          <script src="/${DEFAULT_OUTDIR}/index.js"></script>
+          <script src="/coderduan-umi/client.js"></script>
         </body>
       </html>
     `);
   });
 
-  app.listen(DEFAULT_PORT, async () => {
-    console.log(`App listening at http://${DEFAULT_HOST}:${DEFAULT_PORT}`);
+  app.use(`/${DEFAULT_OUTDIR}`, express.static(esbuildOutput));
+  app.use("/coderduan-umi", express.static(path.resolve(__dirname, "client")));
+
+  const coderduanUmiServer = createServer(app);
+  const ws = createWebSocketServer(coderduanUmiServer);
+
+  function senMessage(type: string, data?: any) {
+    ws.send(JSON.stringify({ type, data }));
+  }
+
+  coderduanUmiServer.listen(port, async () => {
+    console.log(`App listening at http://${DEFAULT_HOST}:${port}`);
     try {
-      const devServe = await serve(
-        {
-          port: DEFAULT_BUILD_PORT,
-          host: DEFAULT_HOST,
-          servedir: DEFAULT_OUTDIR,
-          onRequest(args: ServeOnRequestArgs) {
-            if (args.timeInMS) {
-              console.log(`${args.method}:${args.path} ${args.timeInMS} ms`);
+      await build({
+        format: "iife",
+        logLevel: "error",
+        outdir: esbuildOutput,
+        platform: DEFAULT_PLATFORM,
+        bundle: true,
+        define: {
+          // React 在项目中使用到了 process.env.NODE_ENV 环境变量，使用 esbuild 的 define 定义将它替换成真实的值
+          "process.env.NODE_ENV": JSON.stringify("development"),
+        },
+        entryPoints: [path.resolve(cwd, DEFAULT_ENTRY_POINT)],
+        external: ["esbuild"],
+        watch: {
+          onRebuild(error, result) {
+            if (error) {
+              return console.error(JSON.stringify(error));
             }
+            senMessage("reload");
           },
         },
-        {
-          format: "iife",
-          logLevel: "error",
-          outdir: DEFAULT_OUTDIR,
-          platform: DEFAULT_PLATFORM,
-          bundle: true,
-          define: {
-            // React 在项目中使用到了 process.env.NODE_ENV 环境变量，使用 esbuild 的 define 定义将它替换成真实的值
-            "process.env.NODE_ENV": JSON.stringify("development"),
-          },
-          entryPoints: [path.resolve(cwd, DEFAULT_ENTRY_POINT)],
-        }
-      );
-
-      // 脚本退出时中止服务
-      process.on("SIGINT", () => {
-        devServe.stop();
-        process.exit(0);
       });
-
-      process.on("SIGTERM", () => {
-        devServe.stop();
-        process.exit(1);
-      });
+      // [Issues](https://github.com/evanw/esbuild/issues/805)
+      // esbuild serve 不能响应 onRebuild
     } catch (error) {
       console.log(error);
       process.exit(1);

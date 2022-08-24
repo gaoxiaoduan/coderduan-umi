@@ -1,5 +1,4 @@
 "use strict";
-(() => {
-  // src/index.ts
-  console.log("hello coderduan-umi");
-})();
+
+// src/index.ts
+console.log("hello coderduan-umi");
