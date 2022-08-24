@@ -8,9 +8,12 @@
     "serve": "cd www && serve -l 8000"
   },
   "dependencies": {
+    "@alita/flow": "^3.0.1",
     "coderduan-umi": "workspace:*",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router": "^6.3.0",
+    "react-router-dom": "^6.3.0"
   },
   "devDependencies": {
     "serve": "^14.0.1"
