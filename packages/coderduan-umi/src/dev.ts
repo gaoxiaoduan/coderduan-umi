@@ -12,6 +12,8 @@ import {
   DEFAULT_HOST,
   DEFAULT_PORT,
 } from "./constants";
+import { getAppData } from "./appData";
+import { getRoutes } from "./routes";
 
 export const dev = async () => {
   const cwd = process.cwd();
@@ -53,6 +55,11 @@ export const dev = async () => {
   coderduanUmiServer.listen(port, async () => {
     console.log(`App listening at http://${DEFAULT_HOST}:${port}`);
     try {
+      // 生命周期
+      // 获取项目元信息
+      const appData = await getAppData({ cwd });
+      const routes = await getRoutes({ appData });
+
       await build({
         format: "iife",
         logLevel: "error",
