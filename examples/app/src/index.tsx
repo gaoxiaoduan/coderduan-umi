@@ -1,55 +1,11 @@
-import React, { useState, useContext } from "react";
+import React from "react";
 import ReactDOM from "react-dom/client";
-import { HashRouter, Link, Route, Routes, useLocation } from "react-router-dom";
-import { Layout } from "./layouts/Layout";
-import KeepAliveLayout, { KeepAliveContext } from "@coderduan-umi/keepalive";
-
-const Hello = () => {
-  const [text, setText] = useState("Hello coderduan-umi~");
-  const [count, setCount] = useState(0);
-  return (
-    <>
-      <p onClick={() => setText("Hi~")}>{text}</p>
-      <p>{count}</p>
-      <p>
-        <button onClick={() => setCount((count) => count + 1)}>
-          Add count
-        </button>
-      </p>
-      <Link to="/users">Users</Link>
-    </>
-  );
-};
-
-const Users = () => {
-  const [count, setCount] = useState(0);
-  const { pathname } = useLocation();
-  const { dropByCacheKey } = useContext<any>(KeepAliveContext);
-  return (
-    <>
-      <p>Users</p>
-      <p>{count}</p>
-      <p>
-        <button onClick={() => setCount((count) => count + 1)}>
-          Add count
-        </button>
-      </p>
-      <p>
-        <button onClick={() => dropByCacheKey(pathname)}>Clear cache!</button>
-      </p>
-      <Link to="/me">to Me</Link>
-    </>
-  );
-};
-
-const Me = () => {
-  return (
-    <>
-      <p>Me</p>
-      <Link to="/">to Hello</Link>
-    </>
-  );
-};
+import { HashRouter, Route, Routes } from "react-router-dom";
+import KeepAliveLayout from "@coderduan-umi/keepalive";
+import Layout from "./layouts/index";
+import Home from "./pages/home";
+import Users from "./pages/users";
+import Me from "./pages/me";
 
 const App = () => {
   return (
@@ -57,7 +13,7 @@ const App = () => {
       <HashRouter>
         <Routes>
           <Route path="/" element={<Layout />}>
-            <Route path="/" element={<Hello />} />
+            <Route path="/" element={<Home />} />
             <Route path="/users" element={<Users />} />
             <Route path="/me" element={<Me />} />
           </Route>
@@ -66,5 +22,6 @@ const App = () => {
     </KeepAliveLayout>
   );
 };
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(React.createElement(App));

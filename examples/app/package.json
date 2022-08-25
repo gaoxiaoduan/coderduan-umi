@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "pnpm esbuild src/** --bundle --outdir=www",
+    "build": "pnpm esbuild ./src/** --bundle --outdir=www",
     "dev": "coderduan-umi dev",
     "serve": "cd www && serve -l 8000"
   },

@@ -4,6 +4,7 @@ import path from "path";
 import portfinder from "portfinder";
 import { createServer } from "http";
 import { createWebSocketServer } from "./server";
+import { style } from "./styles";
 import {
   DEFAULT_OUTDIR,
   DEFAULT_ENTRY_POINT,
@@ -64,6 +65,7 @@ export const dev = async () => {
         },
         entryPoints: [path.resolve(cwd, DEFAULT_ENTRY_POINT)],
         external: ["esbuild"],
+        plugins: [style()],
         watch: {
           onRebuild(error, result) {
             if (error) {
