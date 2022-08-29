@@ -2,15 +2,23 @@ import path from "path";
 import { mkdir, writeFileSync } from "fs";
 import type { AppData } from "./appData";
 import { DEFAULT_OUTDIR, DEFAULT_FRAMEWORK_NAME } from "./constants";
+import type { UserConfig } from "./config";
 
-export const generateHtml = ({ appData }: { appData: AppData }) => {
+export const generateHtml = ({
+  appData,
+  userConfig,
+}: {
+  appData: AppData;
+  userConfig: UserConfig;
+}) => {
   return new Promise((resolve, reject) => {
+    const title = userConfig.title ?? appData.pkg.name ?? "coderduan-umi";
     const content = `
       <!DOCTYPE html>
       <html lang="en">
         <head>
           <meta charset="UTF-8" />
-          <title>${appData.pkg.name ?? "coderduan-umi"}</title>
+          <title>${title}</title>
         </head>
 
         <body>

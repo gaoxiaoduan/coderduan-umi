@@ -7,3 +7,4 @@ export const DEFAULT_PORT = 8888;
 export const DEFAULT_BUILD_PORT = 8989;
 export const DEFAULT_TEMPLATE = ".coderduan-umi";
 export const DEFAULT_GLOBAL_LAYOUTS = "layouts/index.tsx";
+export const DEFAULT_CONFIG_FILE = "coderduan-umi.config.ts";

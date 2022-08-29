@@ -16,6 +16,7 @@ import { getAppData } from "./appData";
 import { getRoutes } from "./routes";
 import { generateEntry } from "./entry";
 import { generateHtml } from "./html";
+import { getUserConfig } from "./config";
 
 export const dev = async () => {
   const cwd = process.cwd();
@@ -39,7 +40,7 @@ export const dev = async () => {
   const coderduanUmiServer = createServer(app);
   const ws = createWebSocketServer(coderduanUmiServer);
 
-  function senMessage(type: string, data?: any) {
+  function sendMessage(type: string, data?: any) {
     ws.send(JSON.stringify({ type, data }));
   }
 
@@ -47,14 +48,18 @@ export const dev = async () => {
     console.log(`App listening at http://${DEFAULT_HOST}:${port}`);
     try {
       // 生命周期
+
       // 获取项目元信息
       const appData = await getAppData({ cwd });
+      // 获取用户数据
+      const userConfig = await getUserConfig({ appData, sendMessage });
+      // console.log(userConfig);
       // 获取 routes 配置
       const routes = await getRoutes({ appData });
       // 生成项目主入口
-      await generateEntry({ appData, routes });
+      await generateEntry({ appData, routes, userConfig });
       // 生成html
-      await generateHtml({ appData });
+      await generateHtml({ appData, userConfig });
       // 执行构建;
       await build({
         format: "iife",
@@ -74,7 +79,7 @@ export const dev = async () => {
             if (error) {
               return console.error(JSON.stringify(error));
             }
-            senMessage("reload");
+            sendMessage("reload");
           },
         },
       });

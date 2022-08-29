@@ -2,6 +2,7 @@ import { mkdir, writeFileSync } from "fs";
 import path from "path";
 import type { AppData } from "./appData";
 import type { IRoute } from "./routes";
+import type { UserConfig } from "./config";
 
 let count = 1;
 
@@ -23,12 +24,23 @@ const getRouteStr = (routes: IRoute[]) => {
   return { routesStr, importStr };
 };
 
+const configStringify = (config: (string | RegExp)[]) => {
+  return config.map((item) => {
+    if (item instanceof RegExp) {
+      return item;
+    }
+    return `'${item}'`;
+  });
+};
+
 export const generateEntry = ({
   appData,
   routes,
+  userConfig,
 }: {
   appData: AppData;
   routes: IRoute[];
+  userConfig: UserConfig;
 }) => {
   return new Promise((resolve, reject) => {
     count = 0;
@@ -42,7 +54,9 @@ ${importStr}
 
 const App = () => {
     return (
-        <KeepAliveLayout keepalive={[/./]}>
+        <KeepAliveLayout keepalive={[${configStringify(
+          userConfig.keepalive || []
+        )}]}>
             <HashRouter>
                 <Routes>
                 ${routesStr}
