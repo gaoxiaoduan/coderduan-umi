@@ -19,6 +19,7 @@ import { getRoutes } from "./routes";
 import { generateEntry } from "./entry";
 import { generateHtml } from "./html";
 import { getUserConfig } from "./config";
+import { getMockConfig } from "./mock";
 
 export const dev = async () => {
   const cwd = process.cwd();
@@ -49,6 +50,31 @@ export const dev = async () => {
   const buildMain = async ({ appData }: { appData: AppData }) => {
     // 获取用户数据
     const userConfig = await getUserConfig({ appData, coderduanUmiServer });
+    const mockConfig = await getMockConfig({ appData, coderduanUmiServer });
+
+    app.use((req, res, next) => {
+      const result = mockConfig?.[req.method]?.[req.url];
+      const resultType = Object.prototype.toString.call(result);
+      if (
+        resultType === "[object String]" ||
+        resultType === "[object Array]" ||
+        resultType === "[object Object]"
+      ) {
+        res.json(result);
+      } else if (resultType === "[object Function]") {
+        result(req, res);
+      } else {
+        next();
+      }
+    });
+
+    // 获取 routes 配置
+    const routes = await getRoutes({ appData });
+    // 生成项目主入口
+    await generateEntry({ appData, routes, userConfig });
+    // 生成html
+    await generateHtml({ appData, userConfig });
+
     if (userConfig.proxy) {
       Object.keys(userConfig.proxy).forEach((key) => {
         const proxyConfig = userConfig.proxy![key];
@@ -58,13 +84,6 @@ export const dev = async () => {
         }
       });
     }
-
-    // 获取 routes 配置
-    const routes = await getRoutes({ appData });
-    // 生成项目主入口
-    await generateEntry({ appData, routes, userConfig });
-    // 生成html
-    await generateHtml({ appData, userConfig });
   };
 
   coderduanUmiServer.on("REBUILD", async ({ appData }) => {
