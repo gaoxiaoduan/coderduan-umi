@@ -4,6 +4,7 @@ import path from "path";
 import fs from "fs";
 import portfinder from "portfinder";
 import { createServer } from "http";
+import { createProxyMiddleware } from "http-proxy-middleware";
 import { createWebSocketServer } from "./server";
 import { style } from "./styles";
 import {
@@ -48,6 +49,16 @@ export const dev = async () => {
   const buildMain = async ({ appData }: { appData: AppData }) => {
     // 获取用户数据
     const userConfig = await getUserConfig({ appData, coderduanUmiServer });
+    if (userConfig.proxy) {
+      Object.keys(userConfig.proxy).forEach((key) => {
+        const proxyConfig = userConfig.proxy![key];
+        const target = proxyConfig.target;
+        if (target) {
+          app.use(key, createProxyMiddleware(key, userConfig.proxy![key]));
+        }
+      });
+    }
+
     // 获取 routes 配置
     const routes = await getRoutes({ appData });
     // 生成项目主入口

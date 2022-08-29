@@ -4,10 +4,14 @@ import { build } from "esbuild";
 import { DEFAULT_CONFIG_FILE } from "./constants";
 import type { AppData } from "./appData";
 import type { Server } from "http";
+import type { Options as ProxyOptions } from "http-proxy-middleware";
 
 export interface UserConfig {
   title: string;
   keepalive: any[];
+  proxy: {
+    [key: string]: ProxyOptions;
+  };
 }
 
 export const getUserConfig = ({
