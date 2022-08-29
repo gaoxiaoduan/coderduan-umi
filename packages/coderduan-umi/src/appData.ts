@@ -7,6 +7,7 @@ import {
 
 interface Options {
   cwd: string;
+  port: number;
 }
 
 // app元数据类型
@@ -23,7 +24,7 @@ export interface AppData {
   pkg: any; // package.json 信息
 }
 
-export const getAppData = ({ cwd }: Options) => {
+export const getAppData = ({ cwd, port }: Options) => {
   return new Promise((resolve: (value: AppData) => void, reject) => {
     const absSrcPath = path.resolve(cwd, "src");
     const absPagesPath = path.resolve(absSrcPath, "pages");
@@ -33,6 +34,7 @@ export const getAppData = ({ cwd }: Options) => {
     const absOutputPath = path.resolve(cwd, DEFAULT_OUTDIR);
     const paths = {
       cwd,
+      port,
       absSrcPath,
       absPagesPath,
       absTmpPath,

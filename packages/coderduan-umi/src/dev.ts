@@ -13,6 +13,7 @@ import {
   DEFAULT_PORT,
 } from "./constants";
 import { getAppData } from "./appData";
+import type { AppData } from "./appData";
 import { getRoutes } from "./routes";
 import { generateEntry } from "./entry";
 import { generateHtml } from "./html";
@@ -44,22 +45,32 @@ export const dev = async () => {
     ws.send(JSON.stringify({ type, data }));
   }
 
+  const buildMain = async ({ appData }: { appData: AppData }) => {
+    // 获取用户数据
+    const userConfig = await getUserConfig({ appData, coderduanUmiServer });
+    // 获取 routes 配置
+    const routes = await getRoutes({ appData });
+    // 生成项目主入口
+    await generateEntry({ appData, routes, userConfig });
+    // 生成html
+    await generateHtml({ appData, userConfig });
+  };
+
+  coderduanUmiServer.on("REBUILD", async ({ appData }) => {
+    await buildMain({ appData });
+    sendMessage("reload");
+  });
+
   coderduanUmiServer.listen(port, async () => {
     console.log(`App listening at http://${DEFAULT_HOST}:${port}`);
     try {
       // 生命周期
 
       // 获取项目元信息
-      const appData = await getAppData({ cwd });
-      // 获取用户数据
-      const userConfig = await getUserConfig({ appData, sendMessage });
-      // console.log(userConfig);
-      // 获取 routes 配置
-      const routes = await getRoutes({ appData });
-      // 生成项目主入口
-      await generateEntry({ appData, routes, userConfig });
-      // 生成html
-      await generateHtml({ appData, userConfig });
+      const appData = await getAppData({ cwd, port });
+
+      buildMain({ appData });
+
       // 执行构建;
       await build({
         format: "iife",

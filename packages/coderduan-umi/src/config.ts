@@ -3,6 +3,7 @@ import { existsSync } from "fs";
 import { build } from "esbuild";
 import { DEFAULT_CONFIG_FILE } from "./constants";
 import type { AppData } from "./appData";
+import type { Server } from "http";
 
 export interface UserConfig {
   title: string;
@@ -11,10 +12,10 @@ export interface UserConfig {
 
 export const getUserConfig = ({
   appData,
-  sendMessage,
+  coderduanUmiServer,
 }: {
   appData: AppData;
-  sendMessage: (type: string, data?: any) => void;
+  coderduanUmiServer: Server;
 }) => {
   return new Promise(async (resolve: (value: UserConfig) => void, reject) => {
     let config = {};
@@ -36,22 +37,24 @@ export const getUserConfig = ({
             if (error) {
               return console.error(JSON.stringify(error));
             }
-            sendMessage?.("reload");
+            coderduanUmiServer.emit("REBUILD", { appData });
           },
         },
       });
 
       try {
-        config = require(path.resolve(
+        const configOutputFile = path.resolve(
           appData.paths.absOutputPath,
           "coderduan-umi.config.js"
-        )).default;
+        );
+        delete require.cache[configOutputFile];
+        config = require(configOutputFile).default;
       } catch (error) {
         console.error("getUserConfig error", error);
         reject(error);
       }
     }
 
-    resolve(config);
+    resolve(config as UserConfig);
   });
 };

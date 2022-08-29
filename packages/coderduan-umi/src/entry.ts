@@ -55,7 +55,7 @@ ${importStr}
 const App = () => {
     return (
         <KeepAliveLayout keepalive={[${configStringify(
-          userConfig.keepalive || []
+          userConfig?.keepalive ?? []
         )}]}>
             <HashRouter>
                 <Routes>

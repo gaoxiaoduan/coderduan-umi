@@ -26337,7 +26337,7 @@ var DEFAULT_CONFIG_FILE = "coderduan-umi.config.ts";
 
 // src/appData.ts
 var import_path2 = __toESM(require("path"));
-var getAppData = ({ cwd }) => {
+var getAppData = ({ cwd, port }) => {
   return new Promise((resolve, reject) => {
     const absSrcPath = import_path2.default.resolve(cwd, "src");
     const absPagesPath = import_path2.default.resolve(absSrcPath, "pages");
@@ -26347,6 +26347,7 @@ var getAppData = ({ cwd }) => {
     const absOutputPath = import_path2.default.resolve(cwd, DEFAULT_OUTDIR);
     const paths = {
       cwd,
+      port,
       absSrcPath,
       absPagesPath,
       absTmpPath,
@@ -26446,6 +26447,7 @@ var generateEntry = ({
   userConfig
 }) => {
   return new Promise((resolve, reject) => {
+    var _a;
     count = 0;
     const { routesStr, importStr } = getRouteStr(routes);
     const content = `
@@ -26458,7 +26460,7 @@ ${importStr}
 const App = () => {
     return (
         <KeepAliveLayout keepalive={[${configStringify(
-      userConfig.keepalive || []
+      (_a = userConfig == null ? void 0 : userConfig.keepalive) != null ? _a : []
     )}]}>
             <HashRouter>
                 <Routes>
@@ -26537,7 +26539,7 @@ var import_fs4 = require("fs");
 var import_esbuild2 = require("esbuild");
 var getUserConfig = ({
   appData,
-  sendMessage
+  coderduanUmiServer
 }) => {
   return new Promise((resolve, reject) => __async(void 0, null, function* () {
     let config = {};
@@ -26558,15 +26560,17 @@ var getUserConfig = ({
             if (error) {
               return console.error(JSON.stringify(error));
             }
-            sendMessage == null ? void 0 : sendMessage("reload");
+            coderduanUmiServer.emit("REBUILD", { appData });
           }
         }
       });
       try {
-        config = require(import_path6.default.resolve(
+        const configOutputFile = import_path6.default.resolve(
           appData.paths.absOutputPath,
           "coderduan-umi.config.js"
-        )).default;
+        );
+        delete require.cache[configOutputFile];
+        config = require(configOutputFile).default;
       } catch (error) {
         console.error("getUserConfig error", error);
         reject(error);
@@ -26598,14 +26602,21 @@ var dev = () => __async(void 0, null, function* () {
   function sendMessage(type, data) {
     ws.send(JSON.stringify({ type, data }));
   }
+  const buildMain = (_0) => __async(void 0, [_0], function* ({ appData }) {
+    const userConfig = yield getUserConfig({ appData, coderduanUmiServer });
+    const routes = yield getRoutes({ appData });
+    yield generateEntry({ appData, routes, userConfig });
+    yield generateHtml({ appData, userConfig });
+  });
+  coderduanUmiServer.on("REBUILD", (_0) => __async(void 0, [_0], function* ({ appData }) {
+    yield buildMain({ appData });
+    sendMessage("reload");
+  }));
   coderduanUmiServer.listen(port, () => __async(void 0, null, function* () {
     console.log(`App listening at http://${DEFAULT_HOST}:${port}`);
     try {
-      const appData = yield getAppData({ cwd });
-      const userConfig = yield getUserConfig({ appData, sendMessage });
-      const routes = yield getRoutes({ appData });
-      yield generateEntry({ appData, routes, userConfig });
-      yield generateHtml({ appData, userConfig });
+      const appData = yield getAppData({ cwd, port });
+      buildMain({ appData });
       yield (0, import_esbuild3.build)({
         format: "iife",
         logLevel: "error",
