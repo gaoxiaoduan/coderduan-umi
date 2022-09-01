@@ -1,5 +1,9 @@
 import esbuild, { Plugin } from "esbuild";
 import path from "path";
+import postcss from "postcss";
+//@ts-ignore
+import px2rem from "@alitajs/postcss-plugin-px2rem";
+
 export function style(): Plugin {
   return {
     name: "style",
@@ -56,12 +60,42 @@ export function style(): Plugin {
           },
         });
 
-        return {
-          errors,
-          warnings,
-          contents: outputFiles![0].text,
-          loader: "text",
-        };
+        if (errors.length > 0) {
+          return {
+            errors,
+            warnings,
+            contents: outputFiles![0].text,
+            loader: "text",
+          };
+        }
+
+        try {
+          // 使用postcss再处理
+          const result = await postcss([
+            px2rem({
+              rootValue: 100,
+              minPixelValue: 2,
+              selectorDoubleRemList: [/.adm-/, /.ant-/],
+            }),
+          ]).process(outputFiles![0].text, {
+            from: args.path,
+            to: args.path,
+          });
+
+          return {
+            errors,
+            warnings,
+            contents: result.css,
+            loader: "text",
+          };
+        } catch (error) {
+          return {
+            errors,
+            warnings,
+            contents: outputFiles![0].text,
+            loader: "text",
+          };
+        }
       });
     },
   };

@@ -50,6 +50,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { HashRouter, Route, Routes } from "react-router-dom";
 import KeepAliveLayout from "@coderduan-umi/keepalive";
+import "${path.resolve(__dirname, "hd")}"
 ${importStr}
 
 const App = () => {

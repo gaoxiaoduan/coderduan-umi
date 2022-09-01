@@ -23,11 +23,13 @@
   },
   "homepage": "https://github.com/gaoxiaoduan/coderduan-umi#readme",
   "dependencies": {
+    "@alitajs/postcss-plugin-px2rem": "^0.0.1",
     "commander": "^9.4.0",
     "express": "4.17.3",
     "glob": "^8.0.3",
     "http-proxy-middleware": "^2.0.6",
     "portfinder": "^1.0.32",
+    "postcss": "^8.4.16",
     "ws": "^8.8.1"
   },
   "devDependencies": {
