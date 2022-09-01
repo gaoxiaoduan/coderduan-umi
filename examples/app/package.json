@@ -10,7 +10,10 @@
   "dependencies": {
     "@alita/flow": "^3.0.1",
     "@coderduan-umi/keepalive": "workspace:^0.0.1",
+    "antd-mobile": "^5.22.0",
+    "antd-mobile-icons": "^0.3.0",
     "coderduan-umi": "workspace:*",
+    "lorem-ipsum": "^2.0.8",
     "mockjs": "^1.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
