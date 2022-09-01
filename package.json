@@ -16,7 +16,16 @@
   },
   "homepage": "https://github.com/gaoxiaoduan/coderduan-umi#readme",
   "devDependencies": {
+    "@types/minimist": "^1.2.2",
+    "@types/node": "^18.7.14",
+    "@types/resolve": "^1.20.2",
+    "@vercel/ncc": "^0.34.0",
+    "dts-packer": "^0.0.3",
     "esbuild": "^0.15.5",
+    "esno": "^0.16.3",
+    "fs-extra": "^10.1.0",
+    "minimist": "^1.2.6",
+    "resolve": "^1.22.1",
     "typescript": "^4.7.4"
   }
 }

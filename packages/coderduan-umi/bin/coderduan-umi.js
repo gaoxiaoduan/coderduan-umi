@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const { program } = require("commander");
+const { program } = require("../compiled/commander");
 program
   .version(require("../package.json").version, "-v, -V", "输出框架版本")
   .description("手写前端框架")

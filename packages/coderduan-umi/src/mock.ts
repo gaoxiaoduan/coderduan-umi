@@ -1,6 +1,6 @@
 import path from "path";
 import { build } from "esbuild";
-import glob from "glob";
+import glob from "../compiled/glob";
 import type { AppData } from "./appData";
 import type { Server } from "http";
 

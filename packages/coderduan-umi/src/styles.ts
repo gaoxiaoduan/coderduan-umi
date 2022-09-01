@@ -1,8 +1,8 @@
 import esbuild, { Plugin } from "esbuild";
 import path from "path";
-import postcss from "postcss";
+import postcss from "../compiled/postcss";
 //@ts-ignore
-import px2rem from "@alitajs/postcss-plugin-px2rem";
+import px2rem from "../compiled/@alitajs/postcss-plugin-px2rem";
 
 export function style(): Plugin {
   return {
