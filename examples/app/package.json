@@ -5,7 +5,8 @@
   "scripts": {
     "build": "pnpm esbuild ./src/** --bundle --outdir=www",
     "dev": "coderduan-umi dev",
-    "serve": "cd dist && serve -l 8000"
+    "serve": "cd dist && serve -l 8000",
+    "g": "coderduan-umi generate"
   },
   "dependencies": {
     "@alita/flow": "^3.0.1",
