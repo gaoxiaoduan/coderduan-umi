@@ -17,9 +17,11 @@ export interface UserConfig {
 export const getUserConfig = ({
   appData,
   coderduanUmiServer,
+  isProduction = false,
 }: {
   appData: AppData;
-  coderduanUmiServer: Server;
+  coderduanUmiServer?: Server;
+  isProduction?: Boolean;
 }) => {
   return new Promise(async (resolve: (value: UserConfig) => void, reject) => {
     let config = {};
@@ -32,16 +34,16 @@ export const getUserConfig = ({
         outdir: appData.paths.absOutputPath,
         bundle: true,
         define: {
-          "process.env.NODE_ENV": JSON.stringify("development"),
+          "process.env.NODE_ENV": JSON.stringify(isProduction ? "production" : "development"),
         },
         entryPoints: [configFile],
         external: ["esbuild"],
-        watch: {
+        watch: isProduction ? false : {
           onRebuild(error, result) {
             if (error) {
               return console.error(JSON.stringify(error));
             }
-            coderduanUmiServer.emit("REBUILD", { appData });
+            coderduanUmiServer?.emit("REBUILD", { appData });
           },
         },
       });

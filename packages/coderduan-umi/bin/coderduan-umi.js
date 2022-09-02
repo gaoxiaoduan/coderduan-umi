@@ -39,4 +39,12 @@ program
     generate(options.args);
   });
 
+program
+  .command("build")
+  .description("框架构建命令")
+  .action(function () {
+    const { build } = require("../lib/build");
+    build();
+  });
+
 program.parse(process.argv);

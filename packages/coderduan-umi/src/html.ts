@@ -7,9 +7,11 @@ import type { UserConfig } from "./config";
 export const generateHtml = ({
   appData,
   userConfig,
+  isProduction = false
 }: {
   appData: AppData;
   userConfig: UserConfig;
+  isProduction?: Boolean;
 }) => {
   return new Promise((resolve, reject) => {
     const title = userConfig.title ?? appData.pkg.name ?? "coderduan-umi";
@@ -25,8 +27,8 @@ export const generateHtml = ({
           <div id="root">
             <span>loading...</span>
           </div>
-          <script src="/${DEFAULT_OUTDIR}/${DEFAULT_FRAMEWORK_NAME}.js"></script>
-          <script src="/coderduan-umi/client.js"></script>
+          <script src="${isProduction ? '.' : `/${DEFAULT_OUTDIR}`}/${DEFAULT_FRAMEWORK_NAME}.js"></script>
+          ${isProduction ? '' : '<script src="/coderduan-umi/client.js"></script>'}
         </body>
       </html>
     `;

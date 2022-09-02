@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "pnpm esbuild ./src/** --bundle --outdir=www",
+    "build": "coderduan-umi build",
     "dev": "coderduan-umi dev",
-    "serve": "cd dist && serve -l 8000",
+    "serve": "cd dist && serve",
     "g": "coderduan-umi generate"
   },
   "dependencies": {

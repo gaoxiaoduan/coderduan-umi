@@ -2,12 +2,13 @@ import path from "path";
 import {
   DEFAULT_ENTRY_POINT,
   DEFAULT_OUTDIR,
+  DEFAULT_PORT,
   DEFAULT_TEMPLATE,
 } from "./constants";
 
 interface Options {
   cwd: string;
-  port: number;
+  port?: number;
 }
 
 // app元数据类型
@@ -24,7 +25,7 @@ export interface AppData {
   pkg: any; // package.json 信息
 }
 
-export const getAppData = ({ cwd, port }: Options) => {
+export const getAppData = ({ cwd, port = DEFAULT_PORT }: Options) => {
   return new Promise((resolve: (value: AppData) => void, reject) => {
     const absSrcPath = path.resolve(cwd, "src");
     const absPagesPath = path.resolve(absSrcPath, "pages");
